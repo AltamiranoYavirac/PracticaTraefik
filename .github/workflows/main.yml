@@ -34,4 +34,4 @@ jobs:
           context: .
           push: true
           # Nombra la imagen con el formato: ghcr.io/TU_USUARIO/TU_REPOSITORIO:latest
-          tags: ghcr.io/${{ github.repository }}:latest
+          tags: ghcr.io/altamiranoyavirac/practicatraefik:latest
