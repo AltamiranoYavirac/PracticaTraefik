@@ -1,0 +1,27 @@
+version: "3.8"
+
+services:
+  cavaltamirano:
+    image: cavaltamirano:latest
+    build: .
+    deploy:
+      replicas: 1
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.cavaltamirano.entrypoints=http"
+        - "traefik.http.routers.cavaltamirano.rule=Host(`cavaltamirano.byronrm.com`)"
+        - "traefik.http.middlewares.cavaltamirano-https-redirect.redirectscheme.scheme=https"
+        - "traefik.http.routers.cavaltamirano.middlewares=cavaltamirano-https-redirect"
+        - "traefik.http.routers.cavaltamirano-secure.entrypoints=https"
+        - "traefik.http.routers.cavaltamirano-secure.rule=Host(`cavaltamirano.byronrm.com`)"
+        - "traefik.http.routers.cavaltamirano-secure.tls=true"
+        - "traefik.http.routers.cavaltamirano-secure.tls.certresolver=http"
+        - "traefik.http.routers.cavaltamirano-secure.service=cavaltamirano"
+        - "traefik.http.services.cavaltamirano.loadbalancer.server.port=80"
+        - "traefik.docker.network=traefik-public"
+    networks:
+      - traefik-public
+
+networks:
+  traefik-public:
+    external: true

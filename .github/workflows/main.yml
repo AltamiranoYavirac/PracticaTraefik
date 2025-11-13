@@ -1,0 +1,37 @@
+name: Construir y Publicar Imagen Docker
+
+# Esto se activa en cada 'push' a la rama 'main'
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    
+    # Da permisos al job para escribir en el registro de paquetes
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      # 1. Obtiene el código de tu repositorio
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Inicia sesión en el GitHub Container Registry (GHCR)
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # 3. Construye la imagen de Docker y la publica
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          # Nombra la imagen con el formato: ghcr.io/TU_USUARIO/TU_REPOSITORIO:latest
+          tags: ghcr.io/${{ github.repository }}:latest
